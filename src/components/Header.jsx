@@ -1,19 +1,26 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import logo from '../assets/logo.jpg';
+import Cart from './Cart';
 
-export default function Header({itemList}) {
+export default function Header({itemList, updateCount}) {
+    const [cartCount, setCartCount] = useState();
 
-    let countValue = 0;
+    const dialog = useRef();
+    
     useEffect(() => {
         function itemCount() {
             let countValue = 0;
             for (let item in itemList) {
                 countValue += itemList[item].quantity;
             }
-            return countValue;
+            setCartCount(countValue);
         }
         itemCount();
     }, [itemList])
+
+    function openCart() {
+        dialog.current.open();
+    }
 
     return (
         <header id="main-header">
@@ -21,7 +28,8 @@ export default function Header({itemList}) {
                 <img src={logo} alt="logo" />
                 <h1>Reactfood</h1>
             </div>
-            <button className='text-button'>Cart ({countValue})</button>
+            <button className='text-button' onClick={openCart}>Cart ({cartCount})</button>
+            <Cart updateCount={updateCount} ref={dialog} cartContent={itemList} />
         </header>
     )
 };

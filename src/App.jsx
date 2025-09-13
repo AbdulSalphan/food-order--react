@@ -34,23 +34,29 @@ function App() {
 		)
 	}
 
-	// function addToCartHandler(foodItem) {
-	// 	setCartItems(prevState => {
-	// 		let newCart = [];
-	// 		for (let item of prevState) {
-	// 			let newItem = {...item};
-	// 			if(item.id === foodItem.id) {
-	// 				newItem.quantity += 1;
-	// 			}
-	// 			newCart.push(newItem);
-	// 		}
-	// 		return newCart;
-	// 	})
-	// }
+	function updateCount(action, foodItem) {
+		if(action === 'decrement') {
+			setCartItems(prevState => 
+			prevState.map(item =>
+				item.id === foodItem.id
+				? { ...item, quantity: item.quantity - 1 }
+				: item
+			)
+		)
+		} else if(action === 'increment') {
+			setCartItems(prevState => 
+			prevState.map(item =>
+				item.id === foodItem.id
+				? { ...item, quantity: item.quantity + 1 }
+				: item
+			)
+		)
+		}
+	}
 	
 	return (
 		<>
-			<Header itemList={cartItems} />		
+			<Header updateCount={updateCount} itemList={cartItems} />		
 			{shelfItems ? 
 				<Cards 
 					shelfItems={shelfItems}

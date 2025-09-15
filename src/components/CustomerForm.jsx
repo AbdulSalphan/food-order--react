@@ -1,5 +1,6 @@
 import { useActionState } from 'react';
 import { createPortal } from 'react-dom';
+import Submit from './Submit';
 
 export default function CustomerForm({cartContent, cartValue, ref}) {
     async function formSubmitHandler(prevData, formData) {
@@ -115,7 +116,7 @@ export default function CustomerForm({cartContent, cartValue, ref}) {
                 }
                 <p className="modal-actions">
                     <button className='text-button' type='button'>Close</button>
-                    <button className='button'>Submit Order</button>
+                    <Submit />
                 </p>
             </form>
         </dialog>,

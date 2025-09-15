@@ -1,8 +1,10 @@
 import { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import CustomerForm from './CustomerForm';
 
 export default function Cart({cartContent, updateCount, ref}) {
     const dialog = useRef();
+    const customerFormDialog = useRef();
     const [cartValue, setCartValue] = useState();
 
     useImperativeHandle(ref, () => {
@@ -29,7 +31,8 @@ export default function Cart({cartContent, updateCount, ref}) {
     }
 
     function checkoutHandler() {
-
+        customerFormDialog.current.showModal();
+        dialog.current.close();
     }
 
     return createPortal (
@@ -56,6 +59,7 @@ export default function Cart({cartContent, updateCount, ref}) {
                 <button className="text-button" onClick={modalClose}>Close</button>
                 {cartValue > 0 && <button className="button" onClick={checkoutHandler}>Go to Checkout</button>}
             </p>
+            <CustomerForm cartValue={cartValue} cartContent={cartContent} ref={customerFormDialog} />
         </dialog>,
         document.getElementById('modal')
     )

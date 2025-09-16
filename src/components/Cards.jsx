@@ -1,7 +1,22 @@
-export default function Cards({addToCart, shelfItems}) {
+import { useContext, useEffect, useState } from "react"
+import { AppContext } from "./store/app-context"
+
+export default function Cards() {
+    const {shelfItems, addToCartHandler} = useContext(AppContext);
+    const [shelfStatus, setShelfStatus] = useState(false);
+
+    useEffect(() => {
+        function updateShelf() {
+            if(shelfItems != null) {
+                setShelfStatus(true);
+            }
+        }
+        updateShelf();
+    }, [shelfItems])
+
     return (
         <ul id="meals">
-            {shelfItems.map(shelfItem => {
+            {shelfStatus && shelfItems.map(shelfItem => {
                 return (
                     <li className='meal-item' key={shelfItem.id}>
                         <article>
@@ -12,7 +27,7 @@ export default function Cards({addToCart, shelfItems}) {
                                 <p className="meal-item-description">{shelfItem.description}</p>
                             </div>
                             <p className='meal-item-actions'>
-                                <button className='button' onClick={() => addToCart(shelfItem)}>Add to Cart</button>
+                                <button className='button' onClick={() => addToCartHandler(shelfItem)}>Add to Cart</button>
                             </p>
                         </article>
                     </li>

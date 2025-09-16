@@ -1,8 +1,11 @@
-import { useActionState } from 'react';
+import { useActionState, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import Submit from './Submit';
+import { AppContext } from './store/app-context';
 
-export default function CustomerForm({cartContent, cartValue, ref}) {
+export default function CustomerForm({cartValue, ref}) {
+    const {cartItems} = useContext(AppContext);
+
     async function formSubmitHandler(prevData, formData) {
         const name = formData.get('name');
         const email = formData.get('email');
@@ -38,7 +41,7 @@ export default function CustomerForm({cartContent, cartValue, ref}) {
         }
 
         let dataPackage = {
-            items: cartContent, 
+            items: cartItems, 
             customer: {
                 name, 
                 email, 
@@ -55,16 +58,18 @@ export default function CustomerForm({cartContent, cartValue, ref}) {
 
     async function postData(data) {
         let cleanData = compileData(data)
-        const response = await fetch('http://localhost:3000/orders', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(cleanData)
-        });
-
-        if(!response.ok) {
-            return;
+        console.log(JSON.stringify(cleanData));
+        // console.log('[{"items":[{"id":"m1","name":"Mac & Cheese","price":"8.99","description":"Creamy cheddar cheese mixed with perfectly cooked macaroni, topped with crispy breadcrumbs. A classic comfort food.","image":"images/mac-and-cheese.jpg","quantity":1},{"id":"m2","name":"Margherita Pizza","price":"12.99","description":"A classic pizza with fresh mozzarella, tomatoes, and basil on a thin and crispy crust.","image":"images/margherita-pizza.jpg","quantity":1}],"customer":{"name":"Abdul Salphan","email":"abdulsalphan@gmail.com","street":"457/1, PILAIYAR KOIL STREET","postal-code":"603003","city":"Chengalpattu"},"id":"793.0587786106436"},{"items":[{"id":"m1","name":"Mac & Cheese","price":"8.99","description":"Creamy cheddar cheese mixed with perfectly cooked macaroni, topped with crispy breadcrumbs. A classic comfort food.","image":"images/mac-and-cheese.jpg","quantity":1}],"customer":{"name":"Abdul Salphan","email":"abdulsalphan@gmail.com","street":"457/1, PILAIYAR KOIL STREET","postal-code":"603003","city":"Chengalpattu"},"id":"940.4809135886399"}]')
+        try {
+            const response = await fetch('http://localhost:3000/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(cleanData)
+            });
+        } catch (error) {
+            console.log(error);
         }
     }
 

@@ -1,22 +1,26 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
+import { AppContext } from './store/app-context';
+
 import logo from '../assets/logo.jpg';
 import Cart from './Cart';
 
-export default function Header({itemList, updateCount}) {
+export default function Header() {
     const [cartCount, setCartCount] = useState();
 
     const dialog = useRef();
+
+    const {cartItems} = useContext(AppContext);
     
     useEffect(() => {
         function itemCount() {
             let countValue = 0;
-            for (let item in itemList) {
-                countValue += itemList[item].quantity;
+            for (let item in cartItems) {
+                countValue += cartItems[item].quantity;
             }
             setCartCount(countValue);
         }
         itemCount();
-    }, [itemList])
+    }, [cartItems])
 
     function openCart() {
         dialog.current.open();
@@ -29,7 +33,7 @@ export default function Header({itemList, updateCount}) {
                 <h1>Reactfood</h1>
             </div>
             <button className='text-button' onClick={openCart}>Cart ({cartCount})</button>
-            <Cart updateCount={updateCount} ref={dialog} cartContent={itemList} />
+            <Cart ref={dialog} />
         </header>
     )
 };

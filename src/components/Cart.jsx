@@ -1,11 +1,15 @@
-import { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { useEffect, useImperativeHandle, useRef, useState, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import CustomerForm from './CustomerForm';
 
-export default function Cart({cartContent, updateCount, ref}) {
+import { AppContext } from './store/app-context';
+
+export default function Cart({ref}) {
     const dialog = useRef();
     const customerFormDialog = useRef();
     const [cartValue, setCartValue] = useState();
+
+    const {updateCount, cartItems} = useContext(AppContext);
 
     useImperativeHandle(ref, () => {
         return {
@@ -18,13 +22,13 @@ export default function Cart({cartContent, updateCount, ref}) {
     useEffect(() => {
         function cartValue() {
             let countValue = 0;
-            for (let item in cartContent) {
-                countValue += cartContent[item].price * cartContent[item].quantity;
+            for (let item in cartItems) {
+                countValue += cartItems[item].price * cartItems[item].quantity;
             }
             setCartValue(countValue);
         }
         cartValue();
-    }, [cartContent])
+    }, [cartItems])
 
     function modalClose() {
         dialog.current.close();
@@ -39,7 +43,7 @@ export default function Cart({cartContent, updateCount, ref}) {
         <dialog ref={dialog} className='modal cart'>
             <h2>Your Cart</h2>
             <ul>
-                {cartContent && cartContent.map(cartItem => {
+                {cartItems && cartItems.map(cartItem => {
                     if(cartItem.quantity > 0) {
                         return (
                             <li className='cart-item' key={cartItem.id}>
@@ -59,7 +63,7 @@ export default function Cart({cartContent, updateCount, ref}) {
                 <button className="text-button" onClick={modalClose}>Close</button>
                 {cartValue > 0 && <button className="button" onClick={checkoutHandler}>Go to Checkout</button>}
             </p>
-            <CustomerForm cartValue={cartValue} cartContent={cartContent} ref={customerFormDialog} />
+            <CustomerForm cartValue={cartValue} ref={customerFormDialog} />
         </dialog>,
         document.getElementById('modal')
     )

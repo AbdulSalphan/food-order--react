@@ -19,7 +19,6 @@ export default function AppContextProvider({children}) {
 			initiateCartItems(resData);
 		}
       	getData();
-        console.log(shelfItems);
   	}, [])
 
     function initiateCartItems(cartData) {

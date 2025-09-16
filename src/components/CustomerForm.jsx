@@ -6,6 +6,7 @@ import { AppContext } from './store/app-context';
 export default function CustomerForm({cartValue, ref}) {
     const {cartItems} = useContext(AppContext);
     const [formSubmitted, setFormSubmitted] = useState();
+    const [submitError, setSubmitError] = useState(null);
 
     async function formSubmitHandler(prevData, formData) {
         const name = formData.get('name');
@@ -59,18 +60,20 @@ export default function CustomerForm({cartValue, ref}) {
 
     async function postData(data) {
         let cleanData = compileData(data)
-        console.log(JSON.stringify(cleanData));
         try {
-            const response = await fetch('http://localhost:3000/orders', {
+            const response = await fetch('http://localhost:3000/orderssss', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(cleanData)
             });
+            if(!response.ok) {
+                throw new Error('Failed to place order!');
+            }
             setFormSubmitted(response);
         } catch (error) {
-            console.log(error);
+            setSubmitError(error.message || 'Order placement failed.');
         }
     }
 
@@ -90,7 +93,8 @@ export default function CustomerForm({cartValue, ref}) {
 
     let successContent = false;
 
-    if(formSubmitted) {
+    if(formSubmitted && !submitError) {
+        console.log(submitError);
         successContent = (    
             <>
                 <h2>Success!</h2>
@@ -134,11 +138,17 @@ export default function CustomerForm({cartValue, ref}) {
                         </p>
                     </div>
                     {formState.errors &&
-                    <ul className="error">
-                        {formState.errors.map(error => {
-                            return <li key={error}>{error}</li>
-                        })}
-                    </ul>
+                        <ul className="error">
+                            {formState.errors.map(error => {
+                                return <li key={error}>{error}</li>
+                            })}
+                        </ul>
+                    }
+                    {submitError && 
+                        <div className='error'>
+                            <h2>Failed to submit order</h2>
+                            <p>{submitError}</p>
+                        </div>
                     }
                     <p className="modal-actions">
                         <button className='text-button' onClick={modalClose} type='button'>Close</button>

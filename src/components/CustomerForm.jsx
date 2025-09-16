@@ -110,7 +110,7 @@ export default function CustomerForm({cartValue, ref}) {
     const [formState, formAction] = useActionState(formSubmitHandler, {errors: null});
 
     return createPortal(
-        <dialog className="modal" ref={ref}>
+        <dialog className="modal" ref={ref} onClose={modalClose}>
             {successContent ? successContent :
                 <form action={formAction}>
                     <h2>Checkout</h2>

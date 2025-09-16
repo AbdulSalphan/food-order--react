@@ -40,7 +40,7 @@ export default function Cart({ref}) {
     }
 
     return createPortal (
-        <dialog ref={dialog} className='modal cart'>
+        <dialog ref={dialog} className='modal cart' onClose={modalClose}>
             <h2>Your Cart</h2>
             <ul>
                 {cartItems && cartItems.map(cartItem => {
